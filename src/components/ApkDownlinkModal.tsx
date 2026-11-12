@@ -129,13 +129,14 @@ export const ApkDownlinkModal: React.FC<ApkDownlinkModalProps> = ({ onClose }) =
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 pt-1">
-              <button
-                onClick={handleDownloadDirectApk}
-                className="flex-1 py-3 px-5 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-slate-950 font-black text-sm shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all"
+              <a
+                href={directApkUrl}
+                download="VanguardWeaver-v1.0.0-armv7.apk"
+                className="flex-1 py-3 px-5 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-slate-950 font-black text-sm shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all text-center no-underline"
               >
                 <Download className="w-4 h-4 stroke-[2.5]" />
                 <span>DIRECT DOWNLOAD APK (.apk)</span>
-              </button>
+              </a>
 
               <button
                 onClick={handleInstallClick}

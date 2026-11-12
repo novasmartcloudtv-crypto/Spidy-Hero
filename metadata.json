@@ -1,0 +1,6 @@
+{
+  "name": "Vanguard Weaver: 3D Open World Superhero",
+  "description": "An action-packed 3D open-world superhero adventure featuring high-speed web swinging, fluid combat, vehicle driving, multi-biome exploration, and low-end mobile optimization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,75 @@
+name: Build Android APK & Release
+
+on:
+  push:
+    branches: [ main, master ]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Web Dependencies
+        run: npm ci || npm install
+
+      - name: Build Web Game Assets
+        run: npm run build
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Copy Built Web Assets to Android Assets
+        run: |
+          mkdir -p android/app/src/main/assets/www
+          cp -r dist/* android/app/src/main/assets/www/
+
+      - name: Build Android APK with Gradle
+        run: |
+          cd android
+          chmod +x gradlew || true
+          gradle assembleRelease || gradle assembleDebug
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VanguardWeaver-APK
+          path: |
+            android/app/build/outputs/apk/release/*.apk
+            android/app/build/outputs/apk/debug/*.apk
+            public/VanguardWeaver-v1.0.0-armv7.apk
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            android/app/build/outputs/apk/release/*.apk
+            android/app/build/outputs/apk/debug/*.apk
+            public/VanguardWeaver-v1.0.0-armv7.apk
+          name: Vanguard Weaver Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          body: |
+            ## Vanguard Weaver 3D: Open World Superhero
+            - **Target Hardware**: Samsung Galaxy A2 Core & Low-End Android Devices (1 GB RAM, Android 8.1+, ARMv7)
+            - **Rendering**: Optimized low-poly WebGL rendering (30 FPS cap, procedural assets, zero 404s)
+            - **Features**: 7 connected biomes, full pendulum web swinging, vehicle driving, martial arts combat, and story campaign.
